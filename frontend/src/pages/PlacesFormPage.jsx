@@ -4,7 +4,7 @@ import Perks from "../Perks";
 import axios from "axios";
 import PhotoUploader from "../PhotoUploader";
 import AccountNav from "../AccountNav";
-import { response } from "express";
+
 export default function PlacesFormPage() {
   const { id } = useParams();
   //   useEffect(() => {
