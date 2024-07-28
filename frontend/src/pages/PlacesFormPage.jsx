@@ -7,13 +7,8 @@ import AccountNav from "../AccountNav";
 
 export default function PlacesFormPage() {
   const { id } = useParams();
-  //   useEffect(() => {
-  //     if (!id) return;
-  //     axios.get(`/places/${id}`).then((response) => {
-  //       const { data } = response;
-  //     });
-  //   }, [id]);
 
+  console.log(id);
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
@@ -25,7 +20,24 @@ export default function PlacesFormPage() {
   const [checkOutTime, setCheckOutTime] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
   const [redirect, setRedirect] = useState(false);
-  async function addNewPlaces(e) {
+
+  useEffect(() => {
+    if (!id) return;
+    axios.get(`/places/${id}`).then((response) => {
+      const { data } = response;
+      setTitle(data.title);
+      setAddress(data.address);
+      setAddedPhotos(data.photos);
+      setDescription(data.description);
+      setPerks(data.perks);
+      setExtraInfo(data.extraInfo);
+      setCheckInTime(data.checkIn);
+      setCheckOutTime(data.checkOut);
+      setMaxGuests(maxGuests);
+    });
+  }, [id]);
+
+  async function savePlace(e) {
     e.preventDefault();
     const placeData = {
       title,
@@ -34,12 +46,19 @@ export default function PlacesFormPage() {
       description,
       perks,
       extraInfo,
-      checkInTime,
-      checkOutTime,
+      checkInTime: Number(checkInTime),
+      checkOutTime: Number(checkOutTime),
       maxGuests,
     };
-    const { data } = await axios.post("/places", placeData);
-    setRedirect(true);
+    if (id) {
+      await axios.put("/places", { id, ...placeData });
+      setRedirect(true);
+    } else {
+      await axios.post("/places", placeData);
+      setRedirect(true);
+    }
+
+    console.log(placeData);
   }
 
   if (redirect) {
@@ -49,7 +68,7 @@ export default function PlacesFormPage() {
   return (
     <div>
       <AccountNav />
-      <form className="max-w-xl mx-auto" onSubmit={addNewPlaces}>
+      <form className="max-w-xl mx-auto" onSubmit={savePlace}>
         <h2 className="text-2xl mt-4">Title</h2>
         <p className="text-gray-500 text-sm">Title for your place </p>
         <input
@@ -97,7 +116,9 @@ export default function PlacesFormPage() {
           <div>
             <h3 className="mt-2 -mb-1 ">Check in time</h3>
             <input
-              type="text"
+              type="number"
+              max="24"
+              min="0"
               onChange={(e) => {
                 setCheckInTime(e.target.value);
               }}
@@ -108,7 +129,9 @@ export default function PlacesFormPage() {
           <div>
             <h3>Check out time</h3>
             <input
-              type="text"
+              type="number"
+              max="24"
+              min="0"
               value={checkOutTime}
               onChange={(e) => setCheckOutTime(e.target.value)}
               placeholder="11"
@@ -124,7 +147,7 @@ export default function PlacesFormPage() {
           </div>
         </div>
         <div>
-          <button className="primary my-4">Add place</button>
+          <button className="primary my-4">Save Place</button>
         </div>
       </form>
     </div>

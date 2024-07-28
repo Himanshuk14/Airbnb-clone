@@ -32,6 +32,7 @@ export default function Perks({ selected, onChange }) {
         <input
           type="checkbox"
           onChange={handleCbClick}
+          checked={selected.includes("Free parking slots")}
           name="Free parking slots"
         />
         <svg
@@ -52,7 +53,12 @@ export default function Perks({ selected, onChange }) {
         <span>Free parking slots</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" onChange={handleCbClick} name="TV" />
+        <input
+          type="checkbox"
+          onChange={handleCbClick}
+          checked={selected.includes("TV")}
+          name="TV"
+        />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -71,7 +77,12 @@ export default function Perks({ selected, onChange }) {
         <span>TV</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" onChange={handleCbClick} name="Radio" />
+        <input
+          type="checkbox"
+          onChange={handleCbClick}
+          checked={selected.includes("Radio")}
+          name="Radio"
+        />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -93,6 +104,7 @@ export default function Perks({ selected, onChange }) {
         <input
           type="checkbox"
           onChange={handleCbClick}
+          checked={selected.includes("private-entrance")}
           name="private-entrance"
         />
         <svg
@@ -113,7 +125,12 @@ export default function Perks({ selected, onChange }) {
         <span>Private entrance</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" onChange={handleCbClick} name="pets" />
+        <input
+          type="checkbox"
+          onChange={handleCbClick}
+          checked={selected.includes("pets")}
+          name="pets"
+        />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

@@ -16,7 +16,7 @@ const imageDownloader = require("image-downloader");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = process.env.JWT_SECRET || "secret";
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-console.log(path.join(__dirname, "uploads"));
+
 app.use(express.json());
 app.use(cookieParser());
 const corsConfig = {
@@ -56,7 +56,6 @@ app.post("/login", async (req, res) => {
             if (err) {
               return res.status(500).json({ message: "Error signing token" });
             }
-            console.log("token", token);
 
             res.cookie("token", token).json(user);
           }
@@ -112,7 +111,7 @@ app.post("/upload", photosMiddleware.array("photos", 100), async (req, res) => {
     file.filename = newName;
     uploads.push(newName);
   }
-  console.log("files", req.files);
+
   res.json(uploads);
 });
 
@@ -142,8 +141,8 @@ app.post("/places", async (req, res) => {
       description,
       perks,
       extraInfo,
-      checkInTime,
-      checkOutTime,
+      checkIn: checkInTime,
+      checkOut: checkOutTime,
       maxGuests,
       userId: decoded.id,
     });
@@ -159,7 +158,7 @@ app.get("/places", async (req, res) => {
       throw new Error("Unauthorized");
     }
     const places = await Place.find({ userId: decoded.id });
-    console.log("places", places);
+
     res.json(places);
   });
 });
@@ -168,6 +167,45 @@ app.get("/places/:id", async (req, res) => {
   const { id } = req.params;
   const place = await Place.findById(id);
   res.json(place);
+});
+
+app.put("/places", async (req, res) => {
+  const {
+    id,
+    title,
+    address,
+    addedPhotos,
+    description,
+    perks,
+    extraInfo,
+    checkInTime,
+    checkOutTime,
+    maxGuests,
+  } = req.body;
+  const token = req.cookies.token;
+
+  jwt.verify(token, jwtSecret, async (err, userData) => {
+    if (err) {
+      throw new Error("Unauthorized");
+    }
+    const placeDoc = await Place.findById(id);
+    if (userData.id === placeDoc.userId.toString()) {
+      placeDoc.set({
+        title,
+        address,
+        addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn: checkInTime,
+        checkOut: checkOutTime,
+        maxGuests,
+      });
+      const doc = await placeDoc.save();
+      console.log(doc);
+      res.json("ok");
+    }
+  });
 });
 
 app.listen(4000, () => {
