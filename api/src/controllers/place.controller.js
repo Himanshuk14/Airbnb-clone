@@ -73,4 +73,53 @@ const addPlaces = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, placeDoc, "Place document saved to database"));
 });
 
-export { addPlaces };
+const updateCoverImage = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const user = User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  const place = await Place.findById(id);
+  console.log(place);
+  if (!place) {
+    throw new ApiError(400, "something went wrong");
+  }
+  let coverImageUrl = "";
+
+  if (req.files && req.files.coverImage && req.files.coverImage.length > 0) {
+    const coverImageFilePath = req.files.coverImage[0].path;
+
+    const uploaded = await uploadOnCloudinary(coverImageFilePath);
+
+    coverImageUrl = uploaded?.url;
+  }
+
+  const updatedCoverImage = await Place.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        coverImage: coverImageUrl,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select(
+    "-owner -title -address  -perks -checkIn -checkOut -maxGuests -extraInfo "
+  );
+  if (!updatedCoverImage) {
+    throw new ApiError(
+      500,
+      "Something went wrong on server side while updating"
+    );
+  }
+
+  res
+    .status(201)
+    .json(
+      new ApiResponse(201, updatedCoverImage, "CoverImage updated succesfully")
+    );
+});
+
+export { addPlaces, updateCoverImage };
