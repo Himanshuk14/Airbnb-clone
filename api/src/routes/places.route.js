@@ -3,6 +3,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 import {
   addPhotos,
   addPlaces,
+  deletePhoto,
   updateCoverImage,
 } from "../controllers/place.controller.js";
 
@@ -42,5 +43,7 @@ router.route("/add-photos/:id").post(
   ]),
   addPhotos
 );
+
+router.route("/delete-photo/:id").post(verifyJWT, deletePhoto);
 
 export default router;

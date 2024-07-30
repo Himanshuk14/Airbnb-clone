@@ -165,4 +165,46 @@ const addPhotos = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, updatedPlace, "Photos added succesfully "));
 });
 
-export { addPlaces, updateCoverImage, addPhotos };
+const deletePhoto = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, " Unauthorized request");
+  }
+
+  const { id } = req.params;
+  const { photoId } = req.body;
+  const place = await Place.findById(id);
+  if (!place) {
+    throw new ApiError(401, " Unauthorized request");
+  }
+
+  const updatedArray = [];
+  let count = 0;
+  for (let individual of place.photos) {
+    if (count != photoId) {
+      updatedArray.push(individual);
+    }
+    count++;
+  }
+
+  const updatedPlace = await Place.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        photos: updatedArray,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select(
+    "-owner -title -address  -perks -checkIn -checkOut -maxGuests -extraInfo -coverImage -price"
+  );
+  if (!updatedPlace) {
+    throw new ApiError(500, "Interbal sever error while deleting the photo");
+  }
+  res
+    .status(201)
+    .json(new ApiResponse(201, updatedPlace, "Sucessfully deleted the photo"));
+});
+export { addPlaces, updateCoverImage, addPhotos, deletePhoto };
