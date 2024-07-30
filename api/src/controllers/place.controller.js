@@ -267,6 +267,31 @@ const getAllPlaces = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, placeDoc, "all places fetched succesfully"));
 });
+const getAllPlacesOfAUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  const rel = user._id.toString();
+
+  const allPlaces = await Place.find({ owner: rel });
+  if (!allPlaces) {
+    throw new ApiError(
+      500,
+      "Something went wrong on server in fectching all places of this logged in user"
+    );
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        allPlaces,
+        "All places of this user fetched sucessfully "
+      )
+    );
+});
 export {
   addPlaces,
   updateCoverImage,
@@ -274,4 +299,5 @@ export {
   deletePhoto,
   updatePlace,
   getAllPlaces,
+  getAllPlacesOfAUser,
 };
