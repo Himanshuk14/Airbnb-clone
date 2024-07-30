@@ -5,6 +5,7 @@ import {
   addPlaces,
   deletePhoto,
   updateCoverImage,
+  updatePlace,
 } from "../controllers/place.controller.js";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -45,5 +46,6 @@ router.route("/add-photos/:id").post(
 );
 
 router.route("/delete-photo/:id").post(verifyJWT, deletePhoto);
+router.route("/update-place/:id").post(verifyJWT, updatePlace);
 
 export default router;

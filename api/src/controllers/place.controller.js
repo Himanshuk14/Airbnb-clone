@@ -207,4 +207,8 @@ const deletePhoto = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, updatedPlace, "Sucessfully deleted the photo"));
 });
-export { addPlaces, updateCoverImage, addPhotos, deletePhoto };
+
+const updatePlace = asyncHandler(async (req, res) => {
+  res.json("ok");
+});
+export { addPlaces, updateCoverImage, addPhotos, deletePhoto, updatePlace };
