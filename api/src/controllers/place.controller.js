@@ -75,31 +75,26 @@ const addPlaces = asyncHandler(async (req, res) => {
 
 const updateCoverImage = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const { oldCoverImageUrl, newCoverImageURL, index } = req.body;
 
   const user = User.findById(req.user?._id);
   if (!user) {
     throw new ApiError(401, "Unauthorized request");
   }
   const place = await Place.findById(id);
-  console.log(place);
+
   if (!place) {
     throw new ApiError(400, "something went wrong");
   }
-  let coverImageUrl = "";
 
-  if (req.files && req.files.coverImage && req.files.coverImage.length > 0) {
-    const coverImageFilePath = req.files.coverImage[0].path;
-
-    const uploaded = await uploadOnCloudinary(coverImageFilePath);
-
-    coverImageUrl = uploaded?.url;
-  }
+  place.photos.splice(index, 1, oldCoverImageUrl);
 
   const updatedCoverImage = await Place.findByIdAndUpdate(
     id,
     {
       $set: {
-        coverImage: coverImageUrl,
+        photos: place.photos,
+        coverImage: newCoverImageURL,
       },
     },
     {
