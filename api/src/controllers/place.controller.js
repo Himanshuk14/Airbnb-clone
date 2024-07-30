@@ -259,7 +259,13 @@ const updatePlace = asyncHandler(async (req, res) => {
 });
 
 const getAllPlaces = asyncHandler(async (req, res) => {
-  res.json("ok");
+  const placeDoc = await Place.find();
+  if (!placeDoc) {
+    throw new ApiError(400, "No place document to show");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, placeDoc, "all places fetched succesfully"));
 });
 export {
   addPlaces,
