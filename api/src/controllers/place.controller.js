@@ -115,7 +115,54 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 });
 
 const addPhotos = asyncHandler(async (req, res) => {
-  res.json("ok");
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  const { id } = req.params;
+
+  const place = await Place.findById(id);
+  if (!place) {
+    throw new ApiError(
+      400,
+      "There has to be place inorder to add photos to it"
+    );
+  }
+
+  let urlArray = [];
+
+  if (
+    req.files &&
+    Array.isArray(req.files.photos) &&
+    req.files.photos.length > 0
+  ) {
+    for (let individual of req.files.photos) {
+      const uploaded = await uploadOnCloudinary(individual.path);
+      urlArray.push(uploaded.url);
+    }
+  }
+  let resultantArray = urlArray;
+  if (place.photos.length != 0) {
+    resultantArray = resultantArray.concat(place.photos);
+  }
+
+  const updatedPlace = await Place.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        photos: resultantArray,
+      },
+    },
+    { new: true }
+  ).select(
+    "-checkIn -checkOut -maxGuests -title -extraInfo -description -coverImage"
+  );
+  if (!updatedPlace) {
+    throw new ApiError(500, "Internal server error while adding photos");
+  }
+  res
+    .status(201)
+    .json(new ApiResponse(201, updatedPlace, "Photos added succesfully "));
 });
 
 export { addPlaces, updateCoverImage, addPhotos };
