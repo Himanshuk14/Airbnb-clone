@@ -257,4 +257,15 @@ const updatePlace = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, updatedPlace, "Place updated succesfully"));
 });
-export { addPlaces, updateCoverImage, addPhotos, deletePhoto, updatePlace };
+
+const getAllPlaces = asyncHandler(async (req, res) => {
+  res.json("ok");
+});
+export {
+  addPlaces,
+  updateCoverImage,
+  addPhotos,
+  deletePhoto,
+  updatePlace,
+  getAllPlaces,
+};
