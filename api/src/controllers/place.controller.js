@@ -209,6 +209,52 @@ const deletePhoto = asyncHandler(async (req, res) => {
 });
 
 const updatePlace = asyncHandler(async (req, res) => {
-  res.json("ok");
+  const {
+    address,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+    title,
+  } = req.body;
+  const { id } = req.params;
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+
+  const place = await Place.findById(id);
+  if (!place) {
+    throw new ApiError(401, "No place found for updation");
+  }
+
+  const updatedPlace = await Place.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        address,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
+        title,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!updatedPlace) {
+    throw new ApiError(500, "Internal server error while updating the place");
+  }
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, updatedPlace, "Place updated succesfully"));
 });
 export { addPlaces, updateCoverImage, addPhotos, deletePhoto, updatePlace };
