@@ -9,7 +9,6 @@ export default function PlacesPage() {
   useEffect(() => {
     axios.get("/places/get-all-places-of-a-user").then(({ data }) => {
       setPlaces(data.data);
-      // console.log(data);
     });
   }, []);
 

@@ -31,7 +31,9 @@ export default function PhotoUploader({
       return [...prev, ...filenames];
     });
   }
-
+  function removePhoto(index) {
+    console.log("clicked", index);
+  }
   return (
     <>
       <div className="flex gap-2">
@@ -56,7 +58,7 @@ export default function PhotoUploader({
           </div>
         )}
         {addedPhotos.length > 0 &&
-          addedPhotos.map((photo) => {
+          addedPhotos.map((photo, index) => {
             return (
               <div className="h-42 flex relative " key={photo}>
                 <img
@@ -65,7 +67,7 @@ export default function PhotoUploader({
                   alt="photo"
                 />
                 <button
-                  onClick={() => removePhoto(link)}
+                  onClick={() => removePhoto(index)}
                   className="cursor-pointer absolute bottom-2 right-2 text-white bg-black bg-opacity-50 rounded-2xl py-2 px-3"
                 >
                   <svg
