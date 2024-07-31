@@ -32,11 +32,6 @@ export default function PhotoUploader({
     const { data } = await axios.post(`/places/add-photos/${id}`, formData);
     console.log(data);
     setAddedPhotos(data.data.photos);
-
-    // const { data: filenames } = await axios.post("/upload", formData);
-    // setAddedPhotos((prev) => {
-    //   return [...prev, ...filenames];
-    // });
   }
   async function removePhoto(e, index) {
     e.preventDefault();
@@ -45,6 +40,28 @@ export default function PhotoUploader({
       photoId: index,
     });
     setAddedPhotos(data.data.photos);
+  }
+
+  async function changeCoverImage(
+    e,
+    index,
+    oldCoverImageUrl,
+    newCoverImageURL
+  ) {
+    e.preventDefault();
+    const bodyData = {
+      index,
+      oldCoverImageUrl,
+      newCoverImageURL,
+    };
+
+    const { data } = await axios.post(
+      `/places/update-coverImage/${id}`,
+      bodyData
+    );
+    setCoverImage(data.data.coverImage);
+    setAddedPhotos(data.data.photos);
+    console.log("body", bodyData);
   }
   return (
     <>
@@ -72,7 +89,7 @@ export default function PhotoUploader({
         {addedPhotos.length > 0 &&
           addedPhotos.map((photo, index) => {
             return (
-              <div className="h-42 w-full  flex relative " key={photo}>
+              <div className="h-42 w-full  flex relative " key={index}>
                 <img
                   className="rounded-2xl w-full object-cover position-center"
                   src={photo}
@@ -98,7 +115,7 @@ export default function PhotoUploader({
                   </svg>
                 </button>
                 <button
-                  onClick={() => changeCoverImage(link)}
+                  onClick={(e) => changeCoverImage(e, index, coverImage, photo)}
                   className="cursor-pointer absolute bottom-2 left-2 text-white bg-black bg-opacity-50 rounded-2xl py-2 px-3"
                 >
                   <svg

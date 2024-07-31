@@ -84,13 +84,14 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "something went wrong");
   }
 
-  place.photos.splice(index, 1, oldCoverImageUrl);
+  place.photos[index] = oldCoverImageUrl;
+  await place.save();
 
   const updatedCoverImage = await Place.findByIdAndUpdate(
     id,
     {
       $set: {
-        photos: place.photos,
+        //photos: place.photos,
         coverImage: newCoverImageURL,
       },
     },
