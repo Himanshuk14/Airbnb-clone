@@ -6,6 +6,7 @@ import axios from "axios";
 import AccountNav from "../AccountNav";
 export default function ProfilePage() {
   const { ready, user, setUser } = useContext(UserContext);
+  console.log("user", user);
   const [redirect, setRedirect] = useState(null);
   let { subpage } = useParams();
   async function logout() {

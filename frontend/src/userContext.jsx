@@ -8,8 +8,8 @@ export function UserContextProvider({ children }) {
   useEffect(() => {
     async function getUser() {
       try {
-        const res = await axios.get("/profile");
-        setUser(res.data);
+        const res = await axios.get("/users/getUser");
+        setUser(res.data.data);
         setReady(true);
       } catch (e) {
         console.log("Error getting user", e);
