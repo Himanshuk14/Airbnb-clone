@@ -8,11 +8,10 @@ import AccountNav from "../AccountNav";
 export default function PlacesFormPage() {
   const { id } = useParams();
 
-  console.log(id);
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
-
+  const [coverImage, setCoverImage] = useState("");
   const [description, setDescription] = useState("");
   const [perks, setPerks] = useState([]);
   const [extraInfo, setExtraInfo] = useState("");
@@ -25,15 +24,17 @@ export default function PlacesFormPage() {
     if (!id) return;
     axios.get(`/places/${id}`).then((response) => {
       const { data } = response;
-      setTitle(data.title);
-      setAddress(data.address);
-      setAddedPhotos(data.photos);
-      setDescription(data.description);
-      setPerks(data.perks);
-      setExtraInfo(data.extraInfo);
-      setCheckInTime(data.checkIn);
-      setCheckOutTime(data.checkOut);
-      setMaxGuests(maxGuests);
+
+      setTitle(data.data.title);
+      setAddress(data.data.address);
+      setAddedPhotos(data.data.photos);
+      setDescription(data.data.description);
+      setPerks(data.data.perks);
+      setExtraInfo(data.data.extraInfo);
+      setCheckInTime(data.data.checkIn);
+      setCheckOutTime(data.data.checkOut);
+      setMaxGuests(data.data.maxGuests);
+      setCoverImage(data.data.coverImage);
     });
   }, [id]);
 
@@ -46,8 +47,8 @@ export default function PlacesFormPage() {
       description,
       perks,
       extraInfo,
-      checkInTime: Number(checkInTime),
-      checkOutTime: Number(checkOutTime),
+      checkIn: Number(checkInTime),
+      checkOut: Number(checkOutTime),
       maxGuests,
     };
     if (id) {
@@ -57,8 +58,6 @@ export default function PlacesFormPage() {
       await axios.post("/places", placeData);
       setRedirect(true);
     }
-
-    console.log(placeData);
   }
 
   if (redirect) {
@@ -75,7 +74,7 @@ export default function PlacesFormPage() {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title ,for example:My lovely apartment"
+          placeholder="Title,for example:My lovely apartment"
         />
         <h2 className="text-2xl">Address</h2>
         <p className="text-gray-500 text-sm">Address to this place </p>
@@ -90,6 +89,8 @@ export default function PlacesFormPage() {
         <PhotoUploader
           addedPhotos={addedPhotos}
           setAddedPhotos={setAddedPhotos}
+          coverImage={coverImage}
+          setCoverImage={setCoverImage}
         />
         <h2 className="text-2xl mt-4">Description</h2>
         <p className="text-gray-500 text-sm">Description of the place </p>

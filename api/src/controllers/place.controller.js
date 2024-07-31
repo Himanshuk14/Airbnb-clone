@@ -218,6 +218,7 @@ const updatePlace = asyncHandler(async (req, res) => {
     maxGuests,
     price,
     title,
+    description,
   } = req.body;
   const { id } = req.params;
   const user = await User.findById(req.user?._id);
@@ -242,6 +243,7 @@ const updatePlace = asyncHandler(async (req, res) => {
         maxGuests,
         price,
         title,
+        description,
       },
     },
     {
@@ -292,6 +294,21 @@ const getAllPlacesOfAUser = asyncHandler(async (req, res) => {
       )
     );
 });
+
+const getAplace = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const place = await Place.findById(id);
+  if (!place) {
+    throw new ApiError(
+      500,
+      "Internal server error fectching the details of the page"
+    );
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, place, "Place details fetched succesfully"));
+});
+
 export {
   addPlaces,
   updateCoverImage,
@@ -300,4 +317,5 @@ export {
   updatePlace,
   getAllPlaces,
   getAllPlacesOfAUser,
+  getAplace,
 };

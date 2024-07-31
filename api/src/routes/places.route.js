@@ -6,6 +6,7 @@ import {
   deletePhoto,
   getAllPlaces,
   getAllPlacesOfAUser,
+  getAplace,
   updateCoverImage,
   updatePlace,
 } from "../controllers/place.controller.js";
@@ -51,5 +52,6 @@ router.route("/delete-photo/:id").post(verifyJWT, deletePhoto);
 router.route("/update-place/:id").post(verifyJWT, updatePlace);
 router.route("/get-all-places").get(getAllPlaces);
 router.route("/get-all-places-of-a-user").get(verifyJWT, getAllPlacesOfAUser);
+router.route("/:id").get(verifyJWT, getAplace);
 
 export default router;
