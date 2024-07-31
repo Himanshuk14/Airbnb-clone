@@ -6,6 +6,7 @@ export default function PhotoUploader({
   setAddedPhotos,
   coverImage,
   setCoverImage,
+  id,
 }) {
   const [photoLink, setPhotoLink] = useState("");
   async function addByLink(e) {
@@ -31,8 +32,13 @@ export default function PhotoUploader({
       return [...prev, ...filenames];
     });
   }
-  function removePhoto(index) {
-    console.log("clicked", index);
+  async function removePhoto(e, index) {
+    e.preventDefault();
+
+    const { data } = await axios.post(`/places/delete-photo/${id}`, {
+      photoId: index,
+    });
+    setAddedPhotos(data.data.photos);
   }
   return (
     <>
@@ -67,7 +73,7 @@ export default function PhotoUploader({
                   alt="photo"
                 />
                 <button
-                  onClick={() => removePhoto(index)}
+                  onClick={(e) => removePhoto(e, index)}
                   className="cursor-pointer absolute bottom-2 right-2 text-white bg-black bg-opacity-50 rounded-2xl py-2 px-3"
                 >
                   <svg
@@ -86,7 +92,7 @@ export default function PhotoUploader({
                   </svg>
                 </button>
                 <button
-                  onClick={() => removePhoto(link)}
+                  onClick={() => changeCoverImage(link)}
                   className="cursor-pointer absolute bottom-2 left-2 text-white bg-black bg-opacity-50 rounded-2xl py-2 px-3"
                 >
                   <svg

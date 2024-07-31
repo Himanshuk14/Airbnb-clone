@@ -91,6 +91,7 @@ export default function PlacesFormPage() {
           setAddedPhotos={setAddedPhotos}
           coverImage={coverImage}
           setCoverImage={setCoverImage}
+          id={id}
         />
         <h2 className="text-2xl mt-4">Description</h2>
         <p className="text-gray-500 text-sm">Description of the place </p>
