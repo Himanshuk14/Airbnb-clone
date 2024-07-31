@@ -155,7 +155,7 @@ const addPhotos = asyncHandler(async (req, res) => {
     },
     { new: true }
   ).select(
-    "-checkIn -checkOut -maxGuests -title -extraInfo -description -coverImage"
+    "-checkIn -checkOut -maxGuests -title -extraInfo -description -coverImage -address -price -perks -owner"
   );
   if (!updatedPlace) {
     throw new ApiError(500, "Internal server error while adding photos");

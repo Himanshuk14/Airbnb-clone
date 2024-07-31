@@ -21,16 +21,22 @@ export default function PhotoUploader({
     console.log("added photos", addedPhotos);
   }
   async function uploadPhoto(e) {
+    e.preventDefault();
     const formData = new FormData();
     const files = e.target.files;
+    console.log(files[0]);
     for (let i = 0; i < files.length; i++) {
       formData.append("photos", files[i]);
     }
 
-    const { data: filenames } = await axios.post("/upload", formData);
-    setAddedPhotos((prev) => {
-      return [...prev, ...filenames];
-    });
+    const { data } = await axios.post(`/places/add-photos/${id}`, formData);
+    console.log(data);
+    setAddedPhotos(data.data.photos);
+
+    // const { data: filenames } = await axios.post("/upload", formData);
+    // setAddedPhotos((prev) => {
+    //   return [...prev, ...filenames];
+    // });
   }
   async function removePhoto(e, index) {
     e.preventDefault();
@@ -53,11 +59,11 @@ export default function PhotoUploader({
           Add photo
         </button>
       </div>
-      <div className="mt-2 grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-6 ">
+      <div className="mt-2 grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-4 ">
         {coverImage && (
           <div className=" border-primary">
             <img
-              className="rounded-2xl w-full object-cover position-center"
+              className="rounded-2xl w-full h-full object-cover position-center"
               src={coverImage}
               alt="photo"
             />
@@ -66,7 +72,7 @@ export default function PhotoUploader({
         {addedPhotos.length > 0 &&
           addedPhotos.map((photo, index) => {
             return (
-              <div className="h-42 flex relative " key={photo}>
+              <div className="h-42 w-full  flex relative " key={photo}>
                 <img
                   className="rounded-2xl w-full object-cover position-center"
                   src={photo}
@@ -74,7 +80,7 @@ export default function PhotoUploader({
                 />
                 <button
                   onClick={(e) => removePhoto(e, index)}
-                  className="cursor-pointer absolute bottom-2 right-2 text-white bg-black bg-opacity-50 rounded-2xl py-2 px-3"
+                  className="cursor-pointer flex gap-2 absolute bottom-2 right-2 text-white bg-black bg-opacity-50 rounded-2xl py-2 px-3"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +119,7 @@ export default function PhotoUploader({
               </div>
             );
           })}
-        <label className="h-32 cursor-pointer border flex items-center gap-1 justify-center bg-transparent rounded-2xl p-2 text-2xl text-gray-600 lg:grid">
+        <label className="h-32 cursor-pointer border flex items-center gap-1 justify-center bg-transparent rounded-2xl p-2 text-2xl text-gray-600 lg:grid-cols-2">
           <input
             type="file"
             multiple
