@@ -12,7 +12,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       console.log("Logging in user");
-      const res = await axios.post("/login", {
+      const res = await axios.post("/users/login", {
         email,
         password,
       });
