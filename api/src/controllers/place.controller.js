@@ -14,8 +14,71 @@ const addPlaces = asyncHandler(async (req, res) => {
     checkOut,
     maxGuests,
     price,
+    addedPhotos,
+    coverImage,
     title,
+    description,
   } = req.body;
+
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  const placeData = {
+    owner: user._id,
+    photos: addedPhotos,
+    coverImage,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+    title,
+    address,
+    description,
+  };
+  const placeDoc = await Place.create(placeData);
+  if (!placeDoc) {
+    throw new ApiError(
+      500,
+      "Something went wrong in saving the place document"
+    );
+  }
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, placeDoc, "Place document saved to database"));
+});
+
+const uploadCoverImage = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  let coverImageUrl = "";
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    const coverImageFilePath = req.files.coverImage[0].path;
+    const uploaded = await uploadOnCloudinary(coverImageFilePath);
+    coverImageUrl = uploaded.url;
+  }
+
+  res
+    .status(201)
+    .json(
+      new ApiResponse(201, coverImageUrl, "CoverImage uploaded succesfully")
+    );
+});
+
+const uploadPhotos = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
 
   let urlArray = [];
 
@@ -29,45 +92,9 @@ const addPlaces = asyncHandler(async (req, res) => {
       urlArray.push(uploaded.url);
     }
   }
-  let coverImageUrl = "";
-  if (
-    req.files &&
-    Array.isArray(req.files.coverImage) &&
-    req.files.coverImage.length > 0
-  ) {
-    const coverImageFilePath = req.files.coverImage[0].path;
-    const uploaded = await uploadOnCloudinary(coverImageFilePath);
-    coverImageUrl = uploaded.url;
-  }
-
-  const user = await User.findById(req.user?._id);
-  if (!user) {
-    throw new ApiError(401, "Unauthorized request");
-  }
-  const placeData = {
-    owner: user._id,
-    photos: urlArray,
-    coverImage: coverImageUrl,
-    perks,
-    extraInfo,
-    checkIn,
-    checkOut,
-    maxGuests,
-    price,
-    title,
-    address,
-  };
-  const placeDoc = await Place.create(placeData);
-  if (!placeDoc) {
-    throw new ApiError(
-      500,
-      "Something went wrong in saving the place document"
-    );
-  }
-
   res
     .status(201)
-    .json(new ApiResponse(201, placeDoc, "Place document saved to database"));
+    .json(new ApiResponse(201, urlArray, "sucessfully uploaded all photos"));
 });
 
 const updateCoverImage = asyncHandler(async (req, res) => {
@@ -91,7 +118,6 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     id,
     {
       $set: {
-        //photos: place.photos,
         coverImage: newCoverImageURL,
       },
     },
@@ -319,4 +345,6 @@ export {
   getAllPlaces,
   getAllPlacesOfAUser,
   getAplace,
+  uploadCoverImage,
+  uploadPhotos,
 };
