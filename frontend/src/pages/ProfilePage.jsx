@@ -10,7 +10,7 @@ export default function ProfilePage() {
   const [redirect, setRedirect] = useState(null);
   let { subpage } = useParams();
   async function logout() {
-    await axios.post("/logout");
+    await axios.post("/users/logout");
     setRedirect("/");
     setUser(null);
   }
