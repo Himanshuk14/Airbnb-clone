@@ -12,7 +12,7 @@ export function UserContextProvider({ children }) {
         setUser(res.data.data);
         setReady(true);
       } catch (e) {
-        console.log("Error getting user", e);
+        console.error(e.message);
       }
     }
     getUser();
