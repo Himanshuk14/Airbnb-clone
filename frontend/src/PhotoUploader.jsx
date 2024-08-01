@@ -18,7 +18,6 @@ export default function PhotoUploader({
       return [...prev, filename];
     });
     setPhotoLink("");
-    console.log("added photos", addedPhotos);
   }
   async function uploadPhoto(e) {
     e.preventDefault();
@@ -61,7 +60,6 @@ export default function PhotoUploader({
     );
     setCoverImage(data.data.coverImage);
     setAddedPhotos(data.data.photos);
-    console.log("body", bodyData);
   }
   return (
     <>

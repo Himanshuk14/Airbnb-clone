@@ -7,10 +7,16 @@ export default function Perks({ selected, onChange }) {
       onChange([...selected.filter((item) => item !== name)]);
     }
   }
+  console.log("perks", selected);
   return (
     <>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" name="wifi" onChange={handleCbClick} />
+        <input
+          type="checkbox"
+          name="wifi"
+          checked={selected.includes("wifi")}
+          onChange={handleCbClick}
+        />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -32,7 +38,7 @@ export default function Perks({ selected, onChange }) {
         <input
           type="checkbox"
           onChange={handleCbClick}
-          checked={selected.includes("Free parking slots")}
+          checked={selected.includes("parking")}
           name="Free parking slots"
         />
         <svg
