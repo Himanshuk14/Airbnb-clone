@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { UserContext } from "./userContext";
 export default function Header() {
   const { user } = useContext(UserContext);
+  console.log("header", user);
   return (
     <div>
       <header className="flex justify-between">
