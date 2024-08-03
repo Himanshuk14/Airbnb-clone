@@ -16,7 +16,9 @@ app.use(express.static("public"));
 
 import userRouter from "./routes/user.route.js";
 import placeRouter from "./routes/places.route.js";
+import bookingRouter from "./routes/bookings.route.js";
 app.use("/users", userRouter);
 app.use("/places", placeRouter);
+app.use("/bookings", bookingRouter);
 
 export default app;
