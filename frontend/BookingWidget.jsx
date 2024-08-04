@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { differenceInDays } from "date-fns/differenceInDays";
+import { useParams } from "react-router-dom";
+import { UserContext } from "./src/userContext.jsx";
+import axios from "axios";
 export default function BookingWidget({ place }) {
+  const { id } = useParams();
+  const { user } = useContext(UserContext);
+
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
@@ -10,6 +16,21 @@ export default function BookingWidget({ place }) {
   if (checkIn && checkOut) {
     numberOfDays = differenceInDays(new Date(checkOut), new Date(checkIn));
   }
+
+  async function bookPlace(e) {
+    e.preventDefault();
+    const bookingData = {
+      place: id,
+      checkIn,
+      checkOut,
+      mobile,
+      name,
+    };
+
+    const { data } = await axios.post("/bookings/new", bookingData);
+    console.log(data.data);
+  }
+
   return (
     <div className="bg-white shadow p-4 rounded-2xl">
       <div className="text-2xl text-center">
@@ -49,7 +70,7 @@ export default function BookingWidget({ place }) {
             <label>Your full name:</label>
             <input
               type="text"
-              value={name}
+              value={user.name}
               onChange={(e) => setName(e.target.value)}
             />
             <label>Phone number:</label>
@@ -62,7 +83,7 @@ export default function BookingWidget({ place }) {
         )}
       </div>
 
-      <button className="mt-4 primary">
+      <button onClick={(e) => bookPlace(e)} className="mt-4 primary">
         Book this place
         {numberOfDays > 0 && <span> &#8377;{numberOfDays * place.price}</span>}
       </button>

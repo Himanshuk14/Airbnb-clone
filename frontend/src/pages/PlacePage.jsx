@@ -22,7 +22,6 @@ export default function PlacePage() {
   if (!place) return <div>Error getting the page</div>;
 
   if (showPhotos) {
-    console.log(place.photos);
     return (
       <div className="absolute inset-0 bg-black text-white  min-h-screen">
         <div className="bg-black p-8 grid gap-4">
