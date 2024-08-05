@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { differenceInDays } from "date-fns/differenceInDays";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { UserContext } from "./src/userContext.jsx";
 import axios from "axios";
 export default function BookingWidget({ place }) {
@@ -12,11 +12,16 @@ export default function BookingWidget({ place }) {
   const [maxGuests, setMaxGuests] = useState(1);
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
+  const [redirect, setRedirect] = useState(false);
   let numberOfDays = 0;
   if (checkIn && checkOut) {
     numberOfDays = differenceInDays(new Date(checkOut), new Date(checkIn));
   }
-
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+    }
+  }, [user]);
   async function bookPlace(e) {
     e.preventDefault();
     const bookingData = {
@@ -29,6 +34,11 @@ export default function BookingWidget({ place }) {
 
     const { data } = await axios.post("/bookings/new", bookingData);
     console.log(data.data);
+    setRedirect(true);
+  }
+
+  if (redirect) {
+    return <Navigate to="/account/bookings/" />;
   }
 
   return (
@@ -70,7 +80,7 @@ export default function BookingWidget({ place }) {
             <label>Your full name:</label>
             <input
               type="text"
-              value={user.name}
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <label>Phone number:</label>

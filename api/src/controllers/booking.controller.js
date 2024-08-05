@@ -38,7 +38,7 @@ const getBookingOfAUser = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(401, "Unauthorized request");
   }
-  const bookings = await Booking.find({ user: user._id });
+  const bookings = await Booking.find({ user: user._id }).populate("place");
   if (!bookings) {
     throw new ApiError(
       500,
@@ -50,4 +50,23 @@ const getBookingOfAUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, bookings, "bookings fetched succesfully"));
 });
 
-export { makeNewBookings, getBookingOfAUser };
+const getABooking = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+
+  const { id } = req.params;
+  const booking = await Booking.findById(id).populate("place");
+  if (!booking) {
+    throw new ApiError(
+      500,
+      "Internal servor error fetching the details of booking"
+    );
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, booking, "Booking fetched succesfully"));
+});
+
+export { makeNewBookings, getBookingOfAUser, getABooking };

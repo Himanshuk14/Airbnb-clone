@@ -26,7 +26,7 @@ export default function IndexPages() {
               </div>
               <h2 className="font-bold">{place.address}</h2>
               <h3 className="text-gray-700 text-sm">{place.title}</h3>
-              <p>Hosted by {place.owner}</p>
+              <p>Hosted by {place.owner.name}</p>
               <div className="mt-1">
                 <span className="font-bold">&#8377; {place.price}</span> per
                 night

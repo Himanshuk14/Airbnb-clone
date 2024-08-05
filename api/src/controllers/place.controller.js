@@ -288,7 +288,7 @@ const updatePlace = asyncHandler(async (req, res) => {
 });
 
 const getAllPlaces = asyncHandler(async (req, res) => {
-  const placeDoc = await Place.find();
+  const placeDoc = await Place.find().populate("owner");
   if (!placeDoc) {
     throw new ApiError(400, "No place document to show");
   }
